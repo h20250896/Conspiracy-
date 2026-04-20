@@ -12,28 +12,34 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from pyvis.network import Network
 
-# For file processing
+# For file processing (FIXED VERSION)
+
+import spacy
+
+@st.cache_resource
+def load_spacy_model():
+    try:
+        return spacy.load("en_core_web_sm")
+    except OSError:
+        # Fallback: load from installed package path
+        try:
+            import en_core_web_sm
+            return en_core_web_sm.load()
+        except:
+            st.error("spaCy model 'en_core_web_sm' is not installed. Please add it to requirements.txt.")
+            st.stop()
+
+# Load model once
+nlp = load_spacy_model()
+
+# Other dependencies
 try:
     import PyPDF2
     import docx
-    import spacy
 except ImportError:
-    st.error("Missing dependencies. Please install required packages.")
+    st.error("Missing dependencies. Please install: PyPDF2 and python-docx")
     st.stop()
 
-
-@st.cache_resource
-import spacy
-nlp = spacy.load("en_core_web_sm")
-    try:
-        return spacy.load("en_core_web_sm")
-    except:
-        import os
-        os.system("python -m spacy download en_core_web_sm")
-        return spacy.load("en_core_web_sm")
-
-
-nlp = load_spacy_model()
 
 STYLE = """
 <style>
