@@ -17,10 +17,22 @@ try:
     import PyPDF2
     import docx
     import spacy
-    nlp = spacy.load("en_core_web_sm")
 except ImportError:
-    st.error("Missing dependencies. Please install: PyPDF2, python-docx, spacy, and en_core_web_sm")
+    st.error("Missing dependencies. Please install required packages.")
     st.stop()
+
+
+@st.cache_resource
+def load_spacy_model():
+    try:
+        return spacy.load("en_core_web_sm")
+    except:
+        import os
+        os.system("python -m spacy download en_core_web_sm")
+        return spacy.load("en_core_web_sm")
+
+
+nlp = load_spacy_model()
 
 STYLE = """
 <style>
